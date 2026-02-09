@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# ======================================
+# Spring Boot Runner Script
+# Features:
+# - Profiles: dev, prod, default
+# - Colored output
+# - Auto-build before running
+# - Optional browser open for dev mode (LiveReload)
+# ======================================
+
+# ---------- CONFIG ----------
+MVNW="./mvnw"
+PORT=8080
+BROWSER="xdg-open"
+
+# ---------- COLORS ----------
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[0;34m"
+NC="\033[0m" # No Color
+
+# ---------- FUNCTIONS ----------
+function ui_print(){
+	echo -e "$BLUE[INFO]$NC $1"
+}
+
+function success_print(){
+	echo -e "$GREEN[SUCCESS]$NC $1"
+}
+
+function warn_print(){
+	echo -e "$YELLOW[WARN]$NC $1"
+}
+
+function error_print(){
+	echo -e "$RED[ERROR]$NC $1"
+}
+
+# ---------- CLEAR SCREEN ----------
+clear
+
+# ---------- DETERMINE PROFILE ----------
+PROFILE=""
+if [[ $1 == "dev" ]]; then
+	PROFILE="dev"
+	ui_print "Running with profile: ${YELLOW}dev${NC}"
+elif [[ $1 == "prod" ]]; then
+	PROFILE="prod"
+	ui_print "Running with profile: ${YELLOW}prod${NC}"
+else
+	warn_print "No profile specified, running with default"
+fi
+
+# ---------- BUILD PROJECT ----------
+ui_print "Building project..."
+$MVNW clean install -DskipTests
+if [[ $? -ne 0 ]]; then
+	error_print "Build failed! Aborting..."
+	exit 1
+fi
+success_print "Build successful!"
+
+# ---------- RUN APPLICATION ----------
+if [[ -z "$PROFILE" ]]; then
+	ui_print "Starting application with default profile..."
+	$MVNW spring-boot:run
+else
+	ui_print "Starting application with profile: $PROFILE..."
+	$MVNW spring-boot:run -Dspring-boot.run.profiles=$PROFILE
+fi
+
+# ---------- DEVTOOLS BROWSER OPEN ----------
+if [[ "$PROFILE" == "dev" ]]; then
+	sleep 5  # Wait a few seconds for server startup
+	if command -v $BROWSER &> /dev/null; then
+		ui_print "Opening browser for LiveReload..."
+		$BROWSER http://localhost:$PORT
+	else
+		warn_print "Browser command not found, skipping auto-open."
+	fi
+fi
