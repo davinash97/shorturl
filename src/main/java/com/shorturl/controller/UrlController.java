@@ -21,9 +21,12 @@ public class UrlController {
 		try {
 			String shortUrl = UrlService.longToShort(url);
 			String longUrl = UrlService.shortToLong(shortUrl);
-			return new Response(HttpStatus.OK.value(), HttpStatus.OK.name(), shortUrl, longUrl);
+			return (longUrl.equals(url)) 
+				? new Response(HttpStatus.OK.value(), HttpStatus.OK.name(), shortUrl, longUrl)
+				: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), "not found, try again");
 		} catch (Exception e) {
-			return new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), "some error occured");
+			System.out.println(e.getMessage());
+			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(), "some error occured");
 		}
 	}
 

@@ -72,12 +72,12 @@ else
 fi
 
 # ---------- DEVTOOLS BROWSER OPEN ----------
-if [[ "$PROFILE" == "dev" ]]; then
-	sleep 5  # Wait a few seconds for server startup
-	if command -v $BROWSER &> /dev/null; then
-		ui_print "Opening browser for LiveReload..."
-		$BROWSER http://localhost:$PORT
-	else
-		warn_print "Browser command not found, skipping auto-open."
-	fi
-fi
+# if [[ "$PROFILE" == "dev" ]]; then
+# 	sleep 5  # Wait a few seconds for server startup
+# 	if command -v $BROWSER &> /dev/null; then
+# 		ui_print "Opening browser for LiveReload..."
+# 		$BROWSER http://localhost:$PORT
+# 	else
+# 		warn_print "Browser command not found, skipping auto-open."
+# 	fi
+# fi
