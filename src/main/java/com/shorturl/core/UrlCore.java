@@ -2,6 +2,7 @@ package com.shorturl.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 
 public class UrlCore {
 
@@ -35,6 +36,8 @@ public class UrlCore {
 		return encoded;
 	}
 
+	// For Testing purposes only
+	@Profile("dev")
 	public static long decode(String key) {
 		if (key.isBlank() || key.isEmpty()) {
 			logger.error("Attempted to decode empty or blank string");
