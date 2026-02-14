@@ -11,7 +11,6 @@
 
 # ---------- CONFIG ----------
 MVNW="./mvnw"
-PORT="$(get_env PORT)"
 BROWSER="xdg-open"
 
 # ---------- COLORS ----------
@@ -46,6 +45,13 @@ function get_env() {
 # ---------- CLEAR SCREEN ----------
 clear
 
+if [ -f .env ]; then
+	PORT="$(get_env PORT)"
+else
+	warn_print ".env file missing, rename config.env to .env"
+	exit 0;
+fi
+
 # ---------- DETERMINE PROFILE ----------
 PROFILE=""
 if [[ $1 == "dev" ]]; then
@@ -71,6 +77,7 @@ success_print "Build successful!"
 if [[ -z "$PROFILE" ]]; then
 	ui_print "Starting application with default profile..."
 	$MVNW spring-boot:run
+	# $MVNW spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$PORT"
 else
 	ui_print "Starting application with profile: $PROFILE..."
 	$MVNW spring-boot:run -Dspring-boot.run.profiles=$PROFILE
