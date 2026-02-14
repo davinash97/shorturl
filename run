@@ -11,7 +11,7 @@
 
 # ---------- CONFIG ----------
 MVNW="./mvnw"
-PORT=8080
+PORT="$(get_env PORT)"
 BROWSER="xdg-open"
 
 # ---------- COLORS ----------
@@ -36,6 +36,11 @@ function warn_print(){
 
 function error_print(){
 	echo -e "$RED[ERROR]$NC $1"
+}
+
+function get_env() {
+	local var_name="$1"
+	awk -F '=' -v key="$var_name" '$1==key {print $2}' .env
 }
 
 # ---------- CLEAR SCREEN ----------

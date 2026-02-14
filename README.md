@@ -80,6 +80,8 @@ decode(shortKey) → returns numeric ID (for testing only)
 git clone https://github.com/davinash97/url_shortener.git
 cd url_shortener
 ```
+### Pre-requirements
+Copy config.env and make a new file named `.env` with the changes
 
 ### Run in Development
 
