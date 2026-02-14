@@ -2,7 +2,6 @@ package com.shorturl.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +20,11 @@ public class UrlController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UrlController.class);
 
-	@Autowired
-	private UrlService urlService;
+	private final UrlService urlService;
+	
+	public UrlController(UrlService urlService) {
+		this.urlService = urlService;
+	};
 
 	@PostMapping
 	public Response getUrl(@RequestParam String url) {
@@ -35,20 +37,22 @@ public class UrlController {
 					: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
 		} catch (Exception e) {
 			logger.error("error occured at {}", e.getMessage());
-			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+					HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 		}
 	}
-	
+
 	@GetMapping("{key}")
 	public Object sendUrl(@PathVariable String key) {
 		try {
 			logger.debug("requested key {}", key);
 			String result = urlService.shortToLong(key);
 			return (result != null) ? new RedirectView(result)
-			: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
+					: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
 		} catch (Exception e) {
 			logger.error("error occured at {}", e.getMessage());
-			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+					HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 		}
 	}
 
