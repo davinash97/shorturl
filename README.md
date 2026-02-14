@@ -144,9 +144,9 @@ src/
 4. Push to the branch (`git push origin <your-branch-name>`)
 5. Open a Pull Request
 
-<!-- 
+
 ---
 
 ### License
 
-MIT License © 2026 [Avinash] -->
+GPL License © 2026 [Avinash]
