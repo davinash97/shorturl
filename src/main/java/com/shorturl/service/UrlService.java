@@ -23,6 +23,10 @@ public class UrlService {
 	}
 
 	public String longToShort(String url) {
+		if(url == null || url.isBlank()) {
+			logger.debug("url is empty");
+			return null;
+		}
 		String key;
 		do {
 			long id = random.nextLong(10_000_000L, 100_000_000L);
@@ -34,6 +38,10 @@ public class UrlService {
 
 	// Implement (if key not exist)
 	public String shortToLong(String key) {
+		if(key == null || key.isBlank()) {
+			logger.debug("key is empty");
+			return null;
+		}
 		logger.debug("checking availability of [{}]", key);
 		return (urlRepository.keyExists(key)) ? urlRepository.findOne(key) : null;
 	}

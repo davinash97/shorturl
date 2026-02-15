@@ -2,7 +2,6 @@ package com.shorturl.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
 
 public class UrlCore {
 
@@ -37,11 +36,18 @@ public class UrlCore {
 	}
 
 	// For Testing purposes only
-	@Profile("dev")
-	public static long decode(String key) {
-		if (key.isBlank() || key.isEmpty()) {
+	static long decode(String key) {
+		if (key == null || key.isBlank()) {
 			logger.error("Attempted to decode empty or blank string");
 			throw new IllegalArgumentException("encoded string cannot be null or empty");
+		}
+
+		if (!key.matches("[0-9a-zA-Z]+")) {
+			throw new IllegalArgumentException("Invalid characters in key");
+		}
+
+		if (key.length() > 11) {
+			throw new IllegalArgumentException("Key too long");
 		}
 
 		long result = 0;
@@ -52,10 +58,14 @@ public class UrlCore {
 				logger.error("Invalid character in encoded string: {}", c);
 				throw new IllegalArgumentException("invalid character in encoded string: " + c);
 			}
+			if (result > (Long.MAX_VALUE - index) / BASE) {
+				throw new IllegalArgumentException("Decoded value overflow");
+			}
 			result = result * BASE + index;
 		}
 
 		logger.debug("Decoded {} -> {}", key, result);
 		return result;
 	}
+
 }

@@ -1,65 +1,65 @@
 package com.shorturl.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.URI;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.shorturl.model.Response;
 import com.shorturl.service.UrlService;
 
-@RestController
-@RequestMapping("/")
-public class UrlController {
+import jakarta.validation.constraints.NotEmpty;
 
-	private static final Logger logger = LoggerFactory.getLogger(UrlController.class);
+@RestController
+@RequestMapping
+public class UrlController {
 
 	private final UrlService urlService;
 
 	public UrlController(UrlService urlService) {
 		this.urlService = urlService;
-	};
+	}
 
 	@PostMapping
-	public Response getUrl(@RequestParam String url) {
-		try {
-			String shortUrl = urlService.longToShort(url);
-			String longUrl = urlService.shortToLong(shortUrl);
-			logger.debug("[{}] generated", shortUrl);
-			return (longUrl.equals(url))
-					? new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), shortUrl, longUrl)
-					: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+	public ResponseEntity<Response> createShortUrl(
+			@RequestParam @NotEmpty String url) {
+
+		if (!url.matches("https?://.*")) {
+			return ResponseEntity.badRequest()
+					.body(new Response(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase()));
 		}
+		String shortUrl = urlService.longToShort(url);
+
+		return ResponseEntity.ok(
+				new Response(
+						HttpStatus.OK.value(),
+						HttpStatus.OK.getReasonPhrase(),
+						shortUrl,
+						url));
 	}
 
 	@GetMapping("{key}")
-	public Object sendUrl(@PathVariable String key) {
-		try {
-			logger.debug("requested key [{}]", key);
-			String result = urlService.shortToLong(key);
-			if (result == null) {
-				logger.debug("key [{}] not found", key);
-				return new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
-			}
-			logger.debug("key [{}] found, redirecting", key);
-			return new RedirectView(result);
-		} catch (
+	public ResponseEntity<?> redirect(@PathVariable String key) {
 
-		Exception e) {
-			logger.error(e.getMessage());
-			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+		String result = urlService.shortToLong(key);
+
+		if (result == null) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(new Response(
+							HttpStatus.NOT_FOUND.value(),
+							HttpStatus.NOT_FOUND.getReasonPhrase()));
 		}
-	}
 
+		return ResponseEntity
+				.status(HttpStatus.FOUND)
+				.location(URI.create(result))
+				.build();
+	}
 }
