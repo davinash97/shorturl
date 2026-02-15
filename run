@@ -60,6 +60,10 @@ if [[ $1 == "dev" ]]; then
 elif [[ $1 == "prod" ]]; then
 	PROFILE="prod"
 	ui_print "Running with profile: ${YELLOW}prod${NC}"
+elif [[ $1 == "test" ]]; then
+	ui_print "Running with profile: ${YELLOW}test${NC}"
+	$MVNW test;
+	exit 1;
 else
 	warn_print "No profile specified, running with default"
 fi
