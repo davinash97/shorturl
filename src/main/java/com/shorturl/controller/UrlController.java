@@ -21,7 +21,7 @@ public class UrlController {
 	private static final Logger logger = LoggerFactory.getLogger(UrlController.class);
 
 	private final UrlService urlService;
-	
+
 	public UrlController(UrlService urlService) {
 		this.urlService = urlService;
 	};
@@ -31,12 +31,12 @@ public class UrlController {
 		try {
 			String shortUrl = urlService.longToShort(url);
 			String longUrl = urlService.shortToLong(shortUrl);
-			logger.debug("{} generated", shortUrl);
+			logger.debug("[{}] generated", shortUrl);
 			return (longUrl.equals(url))
 					? new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), shortUrl, longUrl)
 					: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
 		} catch (Exception e) {
-			logger.error("error occured at {}", e.getMessage());
+			logger.error(e.getMessage());
 			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 					HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 		}
@@ -45,12 +45,18 @@ public class UrlController {
 	@GetMapping("{key}")
 	public Object sendUrl(@PathVariable String key) {
 		try {
-			logger.debug("requested key {}", key);
+			logger.debug("requested key [{}]", key);
 			String result = urlService.shortToLong(key);
-			return (result != null) ? new RedirectView(result)
-					: new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
-		} catch (Exception e) {
-			logger.error("error occured at {}", e.getMessage());
+			if (result == null) {
+				logger.debug("key [{}] not found", key);
+				return new Response(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase());
+			}
+			logger.debug("key [{}] found, redirecting", key);
+			return new RedirectView(result);
+		} catch (
+
+		Exception e) {
+			logger.error(e.getMessage());
 			return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 					HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 		}
