@@ -3,8 +3,8 @@
 ## 📌 Development Milestones
 
 * [ ] Build MVP
-* [ ] Improve Key Generation
-* [ ] Set Up Test Environment
+* [X] Improve Key Generation
+* [X] Set Up Test Environment
 * [ ] Configure Database
 * [ ] Dockerize Application
 * [ ] Build Frontend
