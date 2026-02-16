@@ -37,3 +37,4 @@ build/
 
 ## log file
 *.log 
+*.gz
