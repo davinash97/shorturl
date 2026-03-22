@@ -38,15 +38,19 @@ function error_print(){
 }
 
 function get_env() {
-	local var_name="$1"
-	awk -F '=' -v key="$var_name" '$1==key {print $2}' .env
+	local var_name="$2"
+	awk -F '=' -v key="$var_name" '$2==key {print $2}' $1
 }
 
 # ---------- CLEAR SCREEN ----------
 clear
 
-if [ -f .env ]; then
-	PORT="$(get_env PORT)"
+if [ -f dev.env ]; then
+	PORT="$(get_env dev.env PORT)"
+elif [ -f prod.env ]; then
+		PORT="$(get_env prod.env PORT)"
+elif [ -f .env ]; then
+		PORT="$(get_env .env PORT)"
 else
 	warn_print ".env file missing, rename config.env to .env"
 	exit 0;

@@ -33,8 +33,8 @@ build/
 .vscode/
 
 ## environment file
-.env
+*.env
 
 ## log file
-*.log 
+*.log
 *.gz
