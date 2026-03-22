@@ -11,9 +11,7 @@ import com.shorturl.repository.UrlRepository;
 @Repository
 @Profile("prod")
 public class UrlRepositoryDb implements UrlRepository {
-
     private static final Logger logger = LoggerFactory.getLogger(UrlRepositoryDb.class);
-
     private final JdbcTemplate jdbcTemplate;
 
     public UrlRepositoryDb(JdbcTemplate jdbcTemplate) {
@@ -57,5 +55,4 @@ public class UrlRepositoryDb implements UrlRepository {
 
         return count != null && count > 0;
     }
-
 }
