@@ -68,6 +68,12 @@ elif [[ $1 == "test" ]]; then
 	ui_print "Running with profile: ${YELLOW}test${NC}"
 	$MVNW test;
 	exit 1;
+elif [[ $1 == "docker" ]]; then
+	ui_print "Docker: ${YELLOW}compiling${NC}"
+	docker build -t url-shortener .;
+	ui_print "Docker: ${YELLOW}running${NC}"
+	docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod url-shortener
+	exit 1;
 else
 	warn_print "No profile specified, running with default"
 fi
