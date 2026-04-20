@@ -1,11 +1,11 @@
 package com.shorturl.config.impl;
 
-import com.shorturl.config.Config;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
+
+import com.shorturl.config.Config;
 
 @Configuration
 @Profile("dev")
@@ -24,18 +24,22 @@ public class DevConfig implements Config{
 	@Value("${spring.datasource.password}")
 	private String DB_PASSWORD;
 
+	@Override
 	public int getPort() {
 		return PORT;
 	}
 
+	@Override
 	public String getDbUrl() {
 		return DB_URL;
 	}
 
+	@Override
 	public String getDbUsername() {
 		return DB_USERNAME;
 	}
 
+	@Override
 	public String getDbPassword() {
 		return DB_PASSWORD;
 	}
