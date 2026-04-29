@@ -5,17 +5,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shorturl.model.Response;
+import com.shorturl.model.ApiResponse;
 
 @RestController
 public class DefaultController {
 
 	@GetMapping
-	public ResponseEntity<Response> defaultPath() {
+	public ResponseEntity<ApiResponse<String>> defaultPath() {
 
 		return ResponseEntity.ok(
-				new Response(
+				new ApiResponse<>(
 						HttpStatus.OK.value(),
+						"success",
 						"this is a URL shortener, GET/POST or any type of request is not supported here."));
 	}
 }
