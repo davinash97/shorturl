@@ -1,15 +1,29 @@
 package com.shorturl.model;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Profile {
 
-	private int id;
+	private final UUID id;
+
 	private String first_name;
 	private String last_name;
-	private List<String> urls;
+	private String username;
 
-	public int getId() {
+	private String password;
+
+	private List<UrlResponse> urls;
+
+	public Profile(String first_name, String last_name, String username, String password) {
+		this.id = UUID.randomUUID();
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.username = username;
+		this.password = password;
+	}
+
+	public UUID getId() {
 		return id;
 	}
 
@@ -29,11 +43,27 @@ public class Profile {
 		this.last_name = last_name;
 	}
 
-	public List<String> getUrls() {
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<UrlResponse> getUrls() {
 		return urls;
 	}
 
-	public void setUrls(List<String> urls) {
+	public void setUrls(List<UrlResponse> urls) {
 		this.urls = urls;
 	}
 
