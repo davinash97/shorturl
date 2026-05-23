@@ -10,10 +10,10 @@ public class UrlResponse {
 
 	final int expiry_date = 7;
 
-	private final UUID id;	// profile id - foreign key
+	private final UUID id;	// profile id - foreign token
 
-	private String key;
-	private String link;
+	private String token;
+	private String long_url;
 
 	private String created_at;
 	private String updated_at;
@@ -21,10 +21,10 @@ public class UrlResponse {
 
 	private Integer clicked;
 
-	public UrlResponse(UUID id, String key, String link) {
+	public UrlResponse(UUID id, String token, String long_url) {
 		this.id = id;
-		this.key = key;
-		this.link = link;
+		this.token = token;
+		this.long_url = long_url;
 		this.created_at = LocalDateTime.now().format(formatter);
 		this.updated_at = created_at;
 		this.expires_at = LocalDateTime.parse(created_at).plusDays(expiry_date).toString();
@@ -35,20 +35,20 @@ public class UrlResponse {
 		return id;
 	}
 
-	public String getKey() {
-		return key;
+	public String getToken() {
+		return token;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
-	public String getLink() {
-		return link;
+	public String getLongUrl() {
+		return long_url;
 	}
 
-	public void setLink(String link) {
-		this.link = link;
+	public void setLongUrl(String long_url) {
+		this.long_url = long_url;
 	}
 
 	public String getCreated_at() {

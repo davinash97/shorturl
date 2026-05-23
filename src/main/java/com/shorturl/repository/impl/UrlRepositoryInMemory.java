@@ -1,7 +1,7 @@
 package com.shorturl.repository.impl;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +16,16 @@ public class UrlRepositoryInMemory implements UrlRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(UrlRepository.class);
 
-	private static final Map<String, String> map = new HashMap<>();
+	private static final Map<String, String> map = new ConcurrentHashMap<>();
 
 	@Override
-	public String findOne(String key) {
-		if (key == null || key.isBlank()) {
+	public String findOne(Long key) {
+		if (key == null || key <= 0) {
 			logger.debug("key is empty");
 			return null;
 		}
 		logger.debug("getting url for [{}]", key);
-		return map.get(key);
+		return (map.containsKey(key)) ? map.get(key):null;
 	}
 
 	@Override
@@ -38,16 +38,6 @@ public class UrlRepositoryInMemory implements UrlRepository {
 		logger.debug("adding [{}] for [{}]", key, url);
 		map.put(key, url);
 		return key;
-	}
-
-	@Override
-	public boolean keyExists(String key) {
-		if (key == null || key.isBlank()) {
-			logger.debug("key is empty");
-			return false;
-		}
-		logger.debug("checking if [{}] exists", key);
-		return map.containsKey(key);
 	}
 
 }
