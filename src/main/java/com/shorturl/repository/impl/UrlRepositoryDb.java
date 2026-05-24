@@ -2,7 +2,7 @@ package com.shorturl.repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,6 @@ import com.shorturl.repository.UrlRepository;
 import com.shorturl.service.UrlService;
 
 @Repository
-@Profile("prod")
 public class UrlRepositoryDb implements UrlRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(UrlRepositoryDb.class);
@@ -38,16 +37,19 @@ public class UrlRepositoryDb implements UrlRepository {
 	}
 
 	@Override
-	public String findOne(Long token) {
+	public String findOne(String token) {
 		logger.debug("Fetching URL from DB for [{}]", token);
 		setup();
-		String result = jdbcTemplate.queryForObject(
-				"SELECT long_url FROM urls WHERE token = ?",
-				String.class,
-				token.toString());
-		return (result.isBlank())
-				? null
-				: result;
+		String result;
+		try {
+			result = jdbcTemplate.queryForObject(
+					"SELECT long_url FROM urls WHERE token = ?",
+					String.class,
+					token);
+		} catch (EmptyResultDataAccessException e) {
+			result = null;
+		}
+		return result;
 	}
 
 	@Override
@@ -68,8 +70,8 @@ public class UrlRepositoryDb implements UrlRepository {
 			Long generatedId = UrlService.idSequence.getAndIncrement();
 			token = Base62Service.encode(generatedId);
 			return insertOne(token, long_url);
-		} catch (Exception e) {
-			logger.debug("error occured at UrlRepositoryDb -> InsertOne" + e.getMessage());
+		} catch (EmptyResultDataAccessException e) {
+			logger.debug("error occured at -> InsertOne" + e.getMessage());
 			return null;
 		}
 	}

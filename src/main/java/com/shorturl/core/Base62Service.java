@@ -2,11 +2,8 @@ package com.shorturl.core;
 
 import java.util.Arrays;
 
-import org.springframework.stereotype.Service;
-
 import com.shorturl.exception.InvalidTokenException;
 
-@Service
 public class Base62Service {
 
 	private static final String ALLOWED_CHARACTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -23,8 +20,8 @@ public class Base62Service {
 	}
 
 	public static String encode(Long id) {
-		if(id < 0
-			|| id == null) {
+		if(id == null
+			|| id < 0) {
 			throw new IllegalArgumentException("Invalid or negative number given");
 		}
 
@@ -44,7 +41,7 @@ public class Base62Service {
 		return sb.reverse().toString();
 	}
 
-	public Long decode(String token) {
+	public static Long decode(String token) {
 
 		if(token == null
 			|| token.isBlank()) {
@@ -57,7 +54,7 @@ public class Base62Service {
 
 			if(c >= CHARACTER_INDEX_LOOKUP.length
 				|| CHARACTER_INDEX_LOOKUP[c] == -1) {
-					throw new InvalidTokenException("invalid character discovered" + c);
+					throw new InvalidTokenException("invalid character discovered " + c);
 			}
 
 			id = (id * BASE) + CHARACTER_INDEX_LOOKUP[c];
