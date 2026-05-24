@@ -15,8 +15,8 @@ public class DefaultController {
 
 		return ResponseEntity.ok(
 				new ApiResponse<>(
-						HttpStatus.OK.value(),
-						"success",
+						HttpStatus.BAD_REQUEST.value(),
+						HttpStatus.BAD_REQUEST.getReasonPhrase(),
 						"this is a URL shortener, GET/POST or any type of request is not supported here."));
 	}
 }

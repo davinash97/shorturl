@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shorturl.core.Base62Service;
+import com.shorturl.exception.InvalidTokenException;
 import com.shorturl.model.ApiResponse;
 import com.shorturl.model.DTO.UrlDto;
 import com.shorturl.service.UrlService;
@@ -61,6 +63,7 @@ public class UrlController {
 	public ResponseEntity<?> redirect(@PathVariable @NotEmpty String token) {
 
 		try {
+			Base62Service.decode(token);
 			String result = urlService.getLongUrl(token);
 			if (result == null) {
 				return ResponseEntity
@@ -68,15 +71,23 @@ public class UrlController {
 						.body(new ApiResponse<>(
 								HttpStatus.NOT_FOUND.value(),
 								HttpStatus.NOT_FOUND.getReasonPhrase(),
-								"Url not found with token" + token));
+								null));
 			}
 
 			return ResponseEntity
 					.status(HttpStatus.FOUND)
 					.location(URI.create(result))
 					.build();
+
+		} catch (InvalidTokenException e) {
+			return ResponseEntity
+					.status(HttpStatus.BAD_REQUEST)
+					.body(new ApiResponse<>(
+							HttpStatus.BAD_REQUEST.value(),
+							HttpStatus.BAD_REQUEST.getReasonPhrase(),
+							token + " is not allowed"));
 		} catch (Exception e) {
-			logger.debug("error occured at: " + e.getMessage());
+			logger.debug(e.getMessage());
 			return ResponseEntity.internalServerError()
 					.body(new ApiResponse<>(
 							HttpStatus.INTERNAL_SERVER_ERROR.value(),
