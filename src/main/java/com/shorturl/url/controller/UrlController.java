@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shorturl.common.model.ApiResponse;
 import com.shorturl.url.core.Base62Service;
 import com.shorturl.url.exception.InvalidTokenException;
-import com.shorturl.url.model.ApiResponse;
 import com.shorturl.url.model.DTO.UrlDto;
 import com.shorturl.url.service.UrlService;
 

@@ -1,4 +1,4 @@
-package com.shorturl.url.config;
+package com.shorturl.common.config;
 
 import org.springframework.context.annotation.Configuration;
 

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shorturl.url.model.ApiResponse;
+import com.shorturl.common.model.ApiResponse;
 
 @RestController
 public class DefaultController {

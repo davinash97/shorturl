@@ -1,16 +1,16 @@
-package com.shorturl.url.config.impl;
+package com.shorturl.common.config.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
-import com.shorturl.url.config.Config;
+import com.shorturl.common.config.Config;
 
 @Configuration
-@Profile("dev")
-@PropertySource(value = "file://${user.dir}/dev.env")
-public class DevConfig implements Config{
+@Profile("prod")
+@PropertySource(value = "file://${user.dir}/prod.env")
+public class ProdConfig implements Config {
 
 	@Value("${server.port}")
 	private int PORT;
