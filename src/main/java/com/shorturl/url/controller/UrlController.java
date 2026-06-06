@@ -60,25 +60,22 @@ public class UrlController {
 	}
 
 	@GetMapping("/{token}")
-	public ResponseEntity<?> redirect(@PathVariable @NotEmpty String token) {
-
+	public ResponseEntity<?> redirectWithPathVariable(@PathVariable @NotEmpty String token) {
 		try {
 			Base62Service.decode(token);
 			String result = urlService.getLongUrl(token);
 			if (result == null) {
 				return ResponseEntity
-						.status(HttpStatus.NOT_FOUND)
-						.body(new ApiResponse<>(
-								HttpStatus.NOT_FOUND.value(),
-								HttpStatus.NOT_FOUND.getReasonPhrase(),
-								null));
+						.status(HttpStatus.FOUND)
+						.location(URI.create("/"))
+						.build();
 			}
 
 			return ResponseEntity
 					.status(HttpStatus.FOUND)
 					.location(URI.create(result))
 					.build();
-
+					
 		} catch (InvalidTokenException e) {
 			return ResponseEntity
 					.status(HttpStatus.BAD_REQUEST)
