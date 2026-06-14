@@ -28,25 +28,23 @@ class AuthController {
 	// Sign Up
 	@PostMapping("/signup")
 	public ResponseEntity<ApiResponse<?>> createAccount(@RequestBody User body) {
-		if(body.getUsername().isEmpty() || body.getFirst_name().isEmpty()
-			|| body.getLast_name().isEmpty() || body.getPassword().isEmpty()) {
-			return ResponseEntity.badRequest().build();
-		}
 		try {
-			
-		Boolean result = authService.createProfile(body.getUsername(), body.getPassword(),
-									body.getFirst_name(), body.getLast_name());
-		return result ? ResponseEntity.accepted().body(
+			if (body.getUsername().isEmpty() || body.getFirst_name().isEmpty()
+					|| body.getLast_name().isEmpty() || body.getPassword().isEmpty()) {
+				throw new IllegalArgumentException("one of the field's empty");
+			}
+			Boolean result = authService.createProfile(body.getUsername(), body.getPassword(),
+					body.getFirst_name(), body.getLast_name());
+			return ResponseEntity.accepted().body(
 					new ApiResponse<>(
-						HttpStatus.ACCEPTED.value(),
-						HttpStatus.ACCEPTED.getReasonPhrase(),
-						result))
-					: ResponseEntity.notFound().build();
+							HttpStatus.ACCEPTED.value(),
+							HttpStatus.ACCEPTED.getReasonPhrase(),
+							result));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.badRequest().body(new ApiResponse<>(
-				HttpStatus.BAD_REQUEST.value(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(),
-				body.getUsername() + " already exists"
+					HttpStatus.BAD_REQUEST.value(),
+					HttpStatus.BAD_REQUEST.getReasonPhrase(),
+					e.getMessage()
 			));
 		}
 	}
