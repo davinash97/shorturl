@@ -38,3 +38,7 @@ build/
 ## log file
 *.log
 *.gz
+
+
+## bruno files
+bruno
