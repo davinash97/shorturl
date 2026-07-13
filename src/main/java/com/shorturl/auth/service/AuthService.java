@@ -25,7 +25,7 @@ public class AuthService {
 	public Boolean createProfile(@NotNull String username, @NotNull String password,
 			@NotNull String first_name, @NotNull String last_name) {
 		if (authRepository.existsByUsername(username)) {
-			throw new IllegalArgumentException("username already exists");
+			throw new IllegalArgumentException(username + " already exists");
 		}
 		User result = authRepository.save(new User(username, password, first_name, last_name));
 		return result != null;

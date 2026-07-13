@@ -33,7 +33,7 @@ public class UrlController {
 	}
 
 	@PostMapping("/api/v1")
-	public ResponseEntity<ApiResponse> createShortUrl(
+	public ResponseEntity<ApiResponse<?>> createShortUrl(
 			@RequestParam @NotEmpty String url) {
 
 		if (!url.matches("https?://.*")) {

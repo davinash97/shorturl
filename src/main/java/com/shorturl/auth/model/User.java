@@ -2,13 +2,13 @@ package com.shorturl.auth.model;
 
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users",
@@ -16,20 +16,20 @@ import jakarta.validation.constraints.NotNull;
 public class User {
 
 	@Id
-	@NotNull
+	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
 
-	@NotNull
+	@Column(nullable = false)
 	private String first_name;
 
-	@NotNull
+	@Column(nullable = false)
 	private String last_name;
 
-	@NotNull
+	@Column(nullable = false)
 	private String username;
 
-	@NotNull
+	@Column(nullable = false)
 	private String password;
 
 	public User(String username, String password, String first_name, String last_name) {

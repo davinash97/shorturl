@@ -26,6 +26,7 @@ public class UrlRepositoryDb implements UrlRepository {
 		jdbcTemplate.execute(
 				"CREATE TABLE IF NOT EXISTS urls ("
 				+ " id SERIAL PRIMARY KEY, "
+				+ " user_id TEXT NOT NULL UNIQUE, "
 				+ " token TEXT NOT NULL UNIQUE, "
 				+ " long_url TEXT NOT NULL, "
 				+ " created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
