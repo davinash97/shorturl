@@ -3,7 +3,6 @@
 # ======================================
 # Spring Boot Runner Script
 # Features:
-# - Profiles: dev, prod, default
 # - Colored output
 # - Auto-build before running
 # - Optional browser open for dev mode (LiveReload)
@@ -44,12 +43,7 @@ function get_env() {
 
 # ---------- CLEAR SCREEN ----------
 clear
-
-if [ -f dev.env ]; then
-	PORT="$(get_env dev.env PORT)"
-elif [ -f prod.env ]; then
-		PORT="$(get_env prod.env PORT)"
-elif [ -f .env ]; then
+if [ -f .env ]; then
 		PORT="$(get_env .env PORT)"
 else
 	warn_print ".env file missing, rename config.env to .env"
@@ -58,21 +52,16 @@ fi
 
 # ---------- DETERMINE PROFILE ----------
 PROFILE=""
-if [[ $1 == "dev" ]]; then
-	PROFILE="dev"
-	ui_print "Running with profile: ${YELLOW}dev${NC}"
-elif [[ $1 == "prod" ]]; then
-	PROFILE="prod"
-	ui_print "Running with profile: ${YELLOW}prod${NC}"
-elif [[ $1 == "test" ]]; then
-	ui_print "Running with profile: ${YELLOW}test${NC}"
+if [[ $1 == "test" ]]; then
+	ui_print "Running profile: ${YELLOW}${1}${NC}"
 	$MVNW test;
 	exit 1;
 elif [[ $1 == "docker" ]]; then
+	ui_print "Running profile: ${YELLOW}${1}${NC}"
 	ui_print "Docker: ${YELLOW}compiling${NC}"
-	docker build -t url-shortener .;
+	docker buildx build --cache-from type=local,src=.buildcache .
 	ui_print "Docker: ${YELLOW}running${NC}"
-	docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod url-shortener
+	docker run -p 8080:8080 url-shortener
 	exit 1;
 else
 	warn_print "No profile specified, running with default"
@@ -89,12 +78,9 @@ success_print "Build successful!"
 
 # ---------- RUN APPLICATION ----------
 if [[ -z "$PROFILE" ]]; then
-	ui_print "Starting application with default profile..."
+	ui_print "Starting application with ${PROFILE} profile..."
 	$MVNW spring-boot:run
 	# $MVNW spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$PORT"
-else
-	ui_print "Starting application with profile: $PROFILE..."
-	$MVNW spring-boot:run -Dspring-boot.run.profiles=$PROFILE
 fi
 
 # ---------- DEVTOOLS BROWSER OPEN ----------

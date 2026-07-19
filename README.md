@@ -64,7 +64,6 @@ decode(shortKey) → returns numeric ID (for testing only)
 
 * Shorten long URLs into short, shareable links
 * Redirect short URLs to their original URLs
-* Dev and Prod profiles for easy development and deployment
 * Automatic reload during development using Spring Boot DevTools
 
 ## Getting Started
@@ -92,12 +91,10 @@ Copy config.env and make a new file named `.env` with the changes
 * The application will start on `http://localhost:8080`
 * LiveReload will auto-refresh the browser on template changes
 
-### Run in Production
-
-Production profile uses your configured production database:
+### Run
 
 ```bash
-./run prod
+./run 
 ```
 
 * DevTools and LiveReload are disabled
