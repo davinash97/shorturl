@@ -51,6 +51,7 @@ public class UrlController {
 							HttpStatus.OK.getReasonPhrase(),
 							new UrlDto(token, url)));
 		} catch (Exception e) {
+			logger.debug(e.getMessage());
 			return ResponseEntity.internalServerError()
 					.body(new ApiResponse<>(
 							HttpStatus.INTERNAL_SERVER_ERROR.value(),
