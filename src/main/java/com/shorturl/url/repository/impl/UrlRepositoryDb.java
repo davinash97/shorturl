@@ -22,25 +22,9 @@ public class UrlRepositoryDb implements UrlRepository {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public void setup() {
-		jdbcTemplate.execute(
-				"CREATE TABLE IF NOT EXISTS urls ("
-				+ " id SERIAL PRIMARY KEY, "
-				+ " user_id TEXT NOT NULL UNIQUE, "
-				+ " token TEXT NOT NULL UNIQUE, "
-				+ " long_url TEXT NOT NULL, "
-				+ " created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
-				+ " updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
-				+ " expires_at TIMESTAMP, "
-				+ " clicked BIGINT DEFAULT 0 "
-				+ ")"
-		);
-	}
-
 	@Override
 	public String findOne(String token) {
 		logger.debug("Fetching URL from DB for [{}]", token);
-		setup();
 		String result;
 		try {
 			result = jdbcTemplate.queryForObject(
@@ -56,7 +40,6 @@ public class UrlRepositoryDb implements UrlRepository {
 	@Override
 	@Transactional
 	public String insertOne(String token, String long_url) {
-		setup();
 		logger.debug("Inserting [{}] -> [{}] in DB", token, long_url);
 
 		try {
