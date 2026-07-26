@@ -24,6 +24,6 @@ public class UrlRepositoryMemory implements UrlRepository {
 		if(id == null || id.isBlank()) {
 			return null;
 		}
-		return store.get(id);
+		return store.getOrDefault(id, null);
 	}
 }
