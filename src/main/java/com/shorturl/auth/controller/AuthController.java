@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shorturl.auth.model.User;
 import com.shorturl.auth.service.AuthService;
 import com.shorturl.common.model.ApiResponse;
+import com.shorturl.user.model.User;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 class AuthController {
 
 	@Autowired
@@ -26,12 +26,22 @@ class AuthController {
 	}
 
 	// Sign Up
-	@PostMapping("/signup")
+	@PostMapping
 	public ResponseEntity<ApiResponse<?>> createAccount(@RequestBody User body) {
 		try {
 			if (body.getUsername().isEmpty() || body.getFirst_name().isEmpty()
 					|| body.getLast_name().isEmpty() || body.getPassword().isEmpty()) {
-				throw new IllegalArgumentException("one of the field's empty");
+
+				if (body.getFirst_name().isEmpty())
+					throw new IllegalArgumentException("First Name field is empty");
+				else if (body.getLast_name().isEmpty())
+					throw new IllegalArgumentException("Last Name field is empty");
+				else if (body.getUsername().isEmpty())
+					throw new IllegalArgumentException("Username field is empty");
+				else if (body.getPassword().isEmpty())
+					throw new IllegalArgumentException("Password field is empty");
+				else
+					throw new IllegalArgumentException("one of the field's empty");
 			}
 			Boolean result = authService.createProfile(body.getUsername(), body.getPassword(),
 					body.getFirst_name(), body.getLast_name());
@@ -44,13 +54,12 @@ class AuthController {
 			return ResponseEntity.badRequest().body(new ApiResponse<>(
 					HttpStatus.BAD_REQUEST.value(),
 					HttpStatus.BAD_REQUEST.getReasonPhrase(),
-					e.getMessage()
-			));
+					e.getMessage()));
 		}
 	}
 
-	// Login 
-	@GetMapping("/login")
+	// Login
+	@GetMapping
 	public ResponseEntity<ApiResponse<String>> welcomeByParam(@RequestParam String key) {
 		return ResponseEntity.ok(new ApiResponse<>(
 				HttpStatus.OK.value(),

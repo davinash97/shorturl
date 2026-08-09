@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.shorturl.auth.model.User;
+import com.shorturl.user.model.User;
 
 public interface AuthRepository extends CrudRepository<User, UUID> {
 	boolean existsByUsername(String username);

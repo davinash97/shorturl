@@ -1,4 +1,4 @@
-package com.shorturl.auth.model;
+package com.shorturl.user.model;
 
 import java.util.UUID;
 
@@ -14,6 +14,8 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "users",
 		uniqueConstraints = @UniqueConstraint(name = "uq_username", columnNames = {"username"}))
 public class User {
+
+	public User(){};
 
 	@Id
 	@Column(nullable = false)

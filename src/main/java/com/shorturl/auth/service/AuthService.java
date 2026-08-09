@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shorturl.auth.model.User;
 import com.shorturl.auth.repository.AuthRepository;
+import com.shorturl.user.model.User;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -32,6 +32,6 @@ public class AuthService {
 	}
 
 	public User readProfile(UUID id) {
-		return authRepository.findById(id).orElse(null);
+		return (User) authRepository.findById(id).orElse(null);
 	}
 }
