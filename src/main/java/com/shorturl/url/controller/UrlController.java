@@ -32,7 +32,7 @@ public class UrlController {
 		this.urlService = urlService;
 	}
 
-	@PostMapping("/api/v1")
+	@PostMapping("/api/v1/url")
 	public ResponseEntity<ApiResponse<?>> createShortUrl(
 			@RequestParam @NotEmpty String url) {
 
