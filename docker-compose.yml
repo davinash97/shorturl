@@ -1,0 +1,23 @@
+services:
+  postgres-db:
+    image: postgres:17
+    env_file:
+      - .env
+    volumes:
+      - shorturl_postgres-data:/var/lib/postgresql/data
+
+  url-shortener:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+
+volumes:
+  shorturl_postgres-data:
