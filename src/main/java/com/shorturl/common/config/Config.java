@@ -12,28 +12,28 @@ public class Config {
 	private int PORT;
 
 	@Value("${spring.datasource.url}")
-	private String DB_URL;
+	private String SPRING_DATASOURCE_URL;
 
 	@Value("${spring.datasource.username}")
-	private String DB_USERNAME;
+	private String SPRING_DATASOURCE_USERNAME;
 
 	@Value("${spring.datasource.password}")
-	private String DB_PASSWORD;
+	private String SPRING_DATASOURCE_PASSWORD;
 
 	public int getPort() {
 		return PORT;
 	}
 
 	public String getDbUrl() {
-		return DB_URL;
+		return SPRING_DATASOURCE_URL;
 	}
 
 	public String getDbUsername() {
-		return DB_USERNAME;
+		return SPRING_DATASOURCE_USERNAME;
 	}
 
 	public String getDbPassword() {
-		return DB_PASSWORD;
+		return SPRING_DATASOURCE_PASSWORD;
 	}
 
 }
