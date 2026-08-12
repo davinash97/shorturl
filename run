@@ -61,7 +61,7 @@ elif [[ $1 == "docker" ]]; then
 	ui_print "Docker: ${YELLOW}compiling${NC}"
 	docker buildx build --cache-from type=local,src=.buildcache .
 	ui_print "Docker: ${YELLOW}running${NC}"
-	docker run -p 8080:8080 url-shortener
+	docker run -p 8080:8080 url-shortener --name url-shortener
 	exit 1;
 else
 	warn_print "No profile specified, running with default"
