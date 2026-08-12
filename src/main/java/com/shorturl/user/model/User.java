@@ -2,6 +2,8 @@ package com.shorturl.user.model;
 
 import java.util.UUID;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +40,7 @@ public class User {
 		this.username = username;
 		this.first_name = first_name;
 		this.last_name = last_name;
-		this.password = password;
+		this.password = new BCryptPasswordEncoder(10).encode(password);
 	}
 
 	public UUID getId() {
