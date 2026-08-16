@@ -4,17 +4,25 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.shorturl.auth.filter.JwtAuthFilter;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+	private JwtAuthFilter jwtAuthFilter;
+
+	public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+		this.jwtAuthFilter = jwtAuthFilter;
+	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
@@ -38,31 +46,34 @@ public class SecurityConfig {
 				.cors(cors -> {
 				})
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(HttpMethod.GET, "/**").permitAll()
-						.requestMatchers("/api/v1/auth/**").permitAll()
+						.requestMatchers("/api/v1/auth").permitAll()
+						// .requestMatchers("/api/v1/user/**").permitAll()
 						.anyRequest().authenticated())
 				.httpBasic(httpBasic -> {
-				});
+				}).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+		;
 
 		return http.build();
 	}
+
 }
 
-	// public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-	// Exception {
-	// http.authorizeHttpRequests(
-	// authorize -> authorize
-	// .requestMatchers(HttpMethod.GET, "/").permitAll()
-	// .requestMatchers("/api/v1/**").permitAll()
-	// .requestMatchers(
-	// // "/api/v1",
-	// "/api/v1/user/**",
-	// "/api/v1/url/**")
-	// .authenticated()
-	// .anyRequest().authenticated()
-	// )
-	// .httpBasic(httpBasic -> {
-	// });
+// public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
+// Exception {
+// http.authorizeHttpRequests(
+// authorize -> authorize
+// .requestMatchers(HttpMethod.GET, "/").permitAll()
+// .requestMatchers("/api/v1/**").permitAll()
+// .requestMatchers(
+// // "/api/v1",
+// "/api/v1/user/**",
+// "/api/v1/url/**")
+// .authenticated()
+// .anyRequest().authenticated()
+// )
+// .httpBasic(httpBasic -> {
+// });
 
-	// return http.build();
-	// }
+// return http.build();
+// }

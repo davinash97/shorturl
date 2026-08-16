@@ -1,37 +1,71 @@
 package com.shorturl.auth.service;
 
-import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shorturl.auth.exception.UsernameNotAvailableException;
+import com.shorturl.auth.model.AuthDto;
+import com.shorturl.auth.model.AuthRequest;
 import com.shorturl.auth.repository.AuthRepository;
-import com.shorturl.user.model.User;
 
 import jakarta.validation.constraints.NotNull;
 
 @Service
 public class AuthService {
 
-	@Autowired
-	private final AuthRepository authRepository;
+	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-	public AuthService(AuthRepository authRepository) {
+	private AuthRepository authRepository;
+
+	private JwtService jwtService;
+
+	private PasswordEncoder passwordEncoder;
+
+	public AuthService(AuthRepository authRepository,
+			PasswordEncoder passwordEncoder,
+			JwtService jwtService) {
 		this.authRepository = authRepository;
+		this.jwtService = jwtService;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Transactional
-	public Boolean createProfile(@NotNull String username, @NotNull String password,
-			@NotNull String first_name, @NotNull String last_name) {
+	public Boolean createProfile(
+			@NotNull String username,
+			@NotNull String password) throws UsernameNotAvailableException {
+
 		if (authRepository.existsByUsername(username)) {
-			throw new IllegalArgumentException(username + " already exists");
+			throw new UsernameNotAvailableException(username + " already exists");
 		}
-		User result = authRepository.save(new User(username, password, first_name, last_name));
+
+		String encodedPassword = passwordEncoder.encode(password);
+
+		AuthRequest result = authRepository.save(
+				new AuthRequest(username, encodedPassword));
+
+		logger.debug("Profile created [{}]", result.getUsername());
+
 		return result != null;
 	}
 
-	public User readProfile(UUID id) {
-		return (User) authRepository.findById(id).orElse(null);
+	public String login(@NotNull String username, @NotNull String password) {
+		AuthRequest user = readProfile(username);
+		if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+			return null;
+		}
+		return jwtService.generateToken(username);
+	}
+
+	public AuthRequest readProfile(@NotNull String username) {
+		return authRepository.findByUsername(username).orElse(null);
+	}
+
+	public AuthDto getProfile(@NotNull String username) {
+		return authRepository.findIdByUsername(username).orElse(null);
 	}
 }

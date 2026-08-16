@@ -1,6 +1,8 @@
 services:
   postgres-db:
     image: postgres:17
+    ports:
+      - "5432:5432"
     env_file:
       - .env
     volumes:
@@ -8,6 +10,8 @@ services:
 
   url-shortener:
     build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/url-shortener
     env_file:
       - .env
     ports:
