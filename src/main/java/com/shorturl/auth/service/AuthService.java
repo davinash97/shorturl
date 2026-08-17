@@ -18,54 +18,54 @@ import jakarta.validation.constraints.NotNull;
 @Service
 public class AuthService {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-	private AuthRepository authRepository;
+    private final AuthRepository authRepository;
 
-	private JwtService jwtService;
+    private final JwtService jwtService;
 
-	private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-	public AuthService(AuthRepository authRepository,
-			PasswordEncoder passwordEncoder,
-			JwtService jwtService) {
-		this.authRepository = authRepository;
-		this.jwtService = jwtService;
-		this.passwordEncoder = passwordEncoder;
-	}
+    public AuthService(AuthRepository authRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtService jwtService) {
+        this.authRepository = authRepository;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-	@Transactional
-	public Boolean createProfile(
-			@NotNull String username,
-			@NotNull String password) throws UsernameNotAvailableException {
+    @Transactional
+    public void createProfile(
+            @NotNull String username,
+            @NotNull String password) throws UsernameNotAvailableException {
 
-		if (authRepository.existsByUsername(username)) {
-			throw new UsernameNotAvailableException(username + " already exists");
-		}
+        if (authRepository.existsByUsername(username)) {
+            throw new UsernameNotAvailableException(username + " already exists");
+        }
 
-		String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(password);
 
-		AuthRequest result = authRepository.save(
-				new AuthRequest(username, encodedPassword));
+        AuthRequest result = authRepository.save(
+                new AuthRequest(username, encodedPassword));
 
-		logger.debug("Profile created [{}]", result.getUsername());
+        logger.debug("Profile created [{}]", result.getUsername());
 
-		return result != null;
-	}
+        return;
+    }
 
-	public String login(@NotNull String username, @NotNull String password) {
-		AuthRequest user = readProfile(username);
-		if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-			return null;
-		}
-		return jwtService.generateToken(username);
-	}
+    public String login(@NotNull String username, @NotNull String password) {
+        AuthRequest user = readProfile(username);
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            return null;
+        }
+        return jwtService.generateToken(username);
+    }
 
-	public AuthRequest readProfile(@NotNull String username) {
-		return authRepository.findByUsername(username).orElse(null);
-	}
+    public AuthRequest readProfile(@NotNull String username) {
+        return authRepository.findByUsername(username).orElse(null);
+    }
 
-	public AuthDto getProfile(@NotNull String username) {
-		return authRepository.findIdByUsername(username).orElse(null);
-	}
+    public AuthDto getProfile(@NotNull String username) {
+        return authRepository.findIdByUsername(username).orElse(null);
+    }
 }
