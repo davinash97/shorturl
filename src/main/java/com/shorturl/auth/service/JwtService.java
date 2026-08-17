@@ -30,7 +30,7 @@ public class JwtService {
 			byte[] keyBytes = md.digest(secret.getBytes(StandardCharsets.UTF_8));
 			return Keys.hmacShaKeyFor(keyBytes);
 		} catch (NoSuchAlgorithmException e) {
-			throw new IllegalStateException("SHA-256 not availble", e);
+			throw new IllegalStateException("SHA-256 not available", e);
 		}
 	}
 
