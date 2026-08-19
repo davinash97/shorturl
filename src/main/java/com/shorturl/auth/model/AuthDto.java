@@ -6,4 +6,6 @@ public interface AuthDto {
 	UUID getId();
 
 	String getUsername();
+
+	String getPassword();
 }

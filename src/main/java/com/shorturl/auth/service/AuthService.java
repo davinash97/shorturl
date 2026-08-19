@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shorturl.auth.exception.UsernameNotAvailableException;
 import com.shorturl.auth.model.AuthDto;
 import com.shorturl.auth.model.AuthRequest;
 import com.shorturl.auth.repository.AuthRepository;
+import com.shorturl.exception.UsernameNotAvailableException;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -65,7 +65,7 @@ public class AuthService {
         return authRepository.findByUsername(username).orElse(null);
     }
 
-    public AuthDto getProfile(@NotNull String username) {
+    public AuthDto getProfileByUsername(@NotNull String username) {
         return authRepository.findIdByUsername(username).orElse(null);
     }
 }
