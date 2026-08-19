@@ -1,4 +1,4 @@
-package com.shorturl.auth.exception;
+package com.shorturl.exception;
 
 public class InvalidTokenException extends RuntimeException {
 	public InvalidTokenException(String message) {

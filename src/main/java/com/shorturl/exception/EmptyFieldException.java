@@ -1,4 +1,4 @@
-package com.shorturl.auth.exception;
+package com.shorturl.exception;
 
 public class EmptyFieldException extends RuntimeException {
 	public EmptyFieldException(String message) {

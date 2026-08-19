@@ -1,4 +1,4 @@
-package com.shorturl.auth.exception;
+package com.shorturl.exception;
 
 public class UsernameNotAvailableException extends RuntimeException {
 	public UsernameNotAvailableException(String message) {
