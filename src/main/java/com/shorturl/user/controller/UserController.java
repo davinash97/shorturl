@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.shorturl.auth.model.AuthDto;
 import com.shorturl.auth.service.AuthService;
 import com.shorturl.auth.service.JwtService;
@@ -24,6 +27,8 @@ import com.shorturl.user.service.UserService;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
+
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	protected UserService userService;
 	protected JwtService jwtService;
@@ -46,15 +51,7 @@ public class UserController {
 
 		AuthDto authDto = authService.getProfileByUsername(authUser);
 
-		User user = userService.getProfile(authUser);
-
-		if (authDto == null || user == null
-				|| authDto.getPassword().isBlank() || authDto.getPassword().isEmpty()
-				|| !passwordEncoder.matches(userDto.password(), authDto.getPassword())
-				|| !authDto.getId().equals(user.getId())) {
-			throw new AccessDeniedException(
-					authUser + " is not authorized to make this change");
-		}
+		validateUserForCreate(userDto, authUser, authDto);
 
 		return ResponseEntity.ok(
 				new ApiResponse<>(
@@ -85,13 +82,7 @@ public class UserController {
 
 		User user = userService.getProfile(authUser);
 
-		if (authDto == null || user == null
-				|| authDto.getPassword().isBlank() || authDto.getPassword().isEmpty()
-				|| !passwordEncoder.matches(userDto.password(), authDto.getPassword())
-				|| !authDto.getId().equals(user.getId())) {
-			throw new AccessDeniedException(
-					authUser + " is not authorized to make this change");
-		}
+		validateUserForUpdate(user, userDto, authUser, authDto);
 
 		return ResponseEntity.ok(
 				new ApiResponse<>(
@@ -109,18 +100,47 @@ public class UserController {
 
 		User user = userService.getProfile(authUser);
 
-		if (authDto == null || user == null
-				|| authDto.getPassword().isBlank() || authDto.getPassword().isEmpty()
-				|| !passwordEncoder.matches(userDto.password(), authDto.getPassword())
-				|| !authDto.getId().equals(user.getId())) {
-			throw new AccessDeniedException(
-					authUser + " is not authorized to make this change");
-		}
+		validateUserForUpdate(user, userDto, authUser, authDto);
 
 		return ResponseEntity.ok(
 				new ApiResponse<>(
 						HttpStatus.OK.value(),
 						HttpStatus.OK.getReasonPhrase(),
 						userService.deleteProfile(authUser)));
+	}
+
+	protected void validateUserForCreate(UserDto userDto, String authUser, AuthDto authDto) {
+
+		// if Authdto is null
+		if (authDto == null) {
+			logger.debug("[] is null", authUser);
+			throw new AccessDeniedException(
+					"authUser " + authUser + " is null");
+		}
+
+		// if Paswwowrd is empty
+		if (authDto.getPassword().isBlank() || authDto.getPassword().isEmpty()) {
+			logger.debug("password field is empty");
+			throw new AccessDeniedException(
+					authUser + " is not authorized to make this change " + authDto + " is empty");
+		}
+
+		// if password doesn't match
+		if (!passwordEncoder.matches(userDto.password(), authDto.getPassword())) {
+			logger.debug("invalid password [] != []", userDto, authDto);
+			throw new AccessDeniedException("invalid password");
+		}
+	}
+
+	protected void validateUserForUpdate(User user, UserDto userDto, String authUser, AuthDto authDto) {
+
+		// if Authdto or user is null
+		if (user == null) {
+			logger.debug("[] is null", user);
+			throw new AccessDeniedException(
+					"user " + user + " is null");
+		}
+
+		validateUserForCreate(userDto, authUser, authDto);
 	}
 }
